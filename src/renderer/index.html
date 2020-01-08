@@ -22,12 +22,6 @@
 				bottom: 1rem;
 				right: 1rem;
 			}
-
-			.top-left-corner {
-				position: fixed;
-				top: 1rem;
-				left: 1rem;
-			}
 		</style>
 	</head>
 	<body>
@@ -42,8 +36,6 @@
 				<button class='ui button' id='screenshotBtn'>
 					<i class='camera icon'></i>
 				</button>
-			</div>
-			<div class='ui mini black icon buttons top-left-corner'>
 				<button class='ui button' id='openBtn'>
 					<i class='open folder icon'></i>
 				</button>
@@ -95,9 +87,9 @@
 			animate();
 
 			const saveAsImage = () => {
-				var imgData, imgNode;
+				let imgData, imgNode;
 				try {
-					var strMime = 'image/png';
+					const strMime = 'image/png';
 					imgData = renderer.domElement.toDataURL(strMime);
 					saveFile(imgData, 'screenshot.png');
 				} catch (e) {
@@ -106,7 +98,7 @@
 			};
 
 			const saveFile = (strData, filename) => {
-				var link = document.createElement('a');
+				const link = document.createElement('a');
 				document.body.appendChild(link);
 				link.download = filename;
 				link.href = strData;
@@ -131,7 +123,7 @@
 
 			document.getElementById('closeBtn').onclick = async () => {
 				await ipcRenderer.invoke('close_app');
-			}
+			};
 
 
 			document.getElementById('openBtn').onclick = async () => {
@@ -146,7 +138,7 @@
 					const textureLoader = new MinecraftTextureLoader();
 					mesh.resolveTextures(path => {
 						let namespace, texture;
-						
+
 						if (path.indexOf(':') === -1) {
 							namespace = 'minecraft';
 							texture = path;
@@ -157,7 +149,7 @@
 						}
 
 						return textureLoader.load(
-							`./mc_assets/${namespace}/textures/${texture}.png`,
+							`http://blockmodels.raildev.tk/static/mc_assets/${namespace}/textures/${texture}.png`,
 						);
 					});
 					scene.add(mesh);

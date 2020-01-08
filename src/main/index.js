@@ -100,9 +100,9 @@ const modelVisionApp = new MCModelVisionApp();
 modelVisionApp.initAutoUpdater();
 modelVisionApp.preventMultipleWindows();
 modelVisionApp.initMainAppEvents();
-modelVisionApp.setupIPC();
 
 (async () => {
 	await app.whenReady();
 	modelVisionApp.createWindow();
+	modelVisionApp.setupIPC();
 })();
