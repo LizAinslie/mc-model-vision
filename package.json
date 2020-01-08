@@ -9,7 +9,7 @@
 	"author": {
 		"name": "Landon Gravat",
 		"email": "railinator4903@gmail.com",
-		"url": "raildev.tk"
+		"url": "https://raildev.tk"
 	},
 	"scripts": {
 		"postinstall": "electron-builder install-app-deps",
@@ -48,7 +48,7 @@
 		"releaseDraft": false
 	},
 	"build": {
-		"appId": "com.railrunner166.mc-model-vision",
+		"appId": "me.railrunner16.mc-model-vision",
 		"mac": {
 			"category": "public.app-category.social-networking",
 			"darkModeSupport": true
