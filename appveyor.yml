@@ -3,6 +3,10 @@ image: Visual Studio 2017
 platform:
   - x64
 
+environment:
+  GH_TOKEN:
+    secure: SIteP5MiOQUmVOwgI1HP2XPDqEYXp2JEQ9iTXX+s6GkFNSWJXnt4+iKcU76UI6RR
+
 cache:
   - node_modules
   - '%USERPROFILE%\.electron'
