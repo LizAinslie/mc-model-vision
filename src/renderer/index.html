@@ -12,8 +12,8 @@
 			}
 
 			#container {
-				width: 100%;
-				height: 100%;
+				width: 100vw;
+				height: 100vh;
 				background-color: #ddd;
 			}
 
@@ -32,7 +32,10 @@
 	</head>
 	<body>
 		<div id='container'>
-			<div class='ui mini blue icon buttons bottom-left-corner'>
+			<button id='closeBtn' class='ui red right corner label'>
+				<i class='close icon'></i>
+			</button>
+			<div class='ui mini blue icon buttons bottom-right-corner'>
 				<button class='ui button' id='fullScreenBtn'>
 					<i class='expand icon'></i>
 				</button>
@@ -40,12 +43,17 @@
 					<i class='camera icon'></i>
 				</button>
 			</div>
+			<div class='ui mini black icon buttons top-left-corner'>
+				<button class='ui button' id='openBtn'>
+					<i class='open folder icon'></i>
+				</button>
+			</div>
 		</div>
 		<script type='text/javascript' src='js/three.min.js'></script>
 		<script type='text/javascript' src='js/OrbitControls.js'></script>
 		<script type='text/javascript' src='js/modelRenderer.js'></script>
 		<script type='text/javascript'>
-			const { dialog } = require('electron').remote;
+			const { ipcRenderer } = require('electron');
 			const containerElem = document.getElementById('container');
 			let renderer, camera, scene, controls, currentFile;
 
@@ -121,26 +129,40 @@
 			document.getElementById('screenshotBtn').onclick = () => saveAsImage();
 			document.getElementById('fullScreenBtn').onclick = () => setFullScreen(true);
 
-			document.getElementById('openBtn', () => {
-				dialog.showOpenDialog((fileNames) => {
-					if(fileNames === undefined){
-						console.log("No file selected");
-						return;
-					}
+			document.getElementById('closeBtn').onclick = async () => {
+				await ipcRenderer.invoke('close_app');
+			}
 
-					new MinecraftModelLoader().load(fileNames[0], mesh => {
-						const textureLoader = new MinecraftTextureLoader();
-						mesh.resolveTextures(path =>
-								textureLoader.load(
-										`./static/mc_assets/${path.split(/\:/g)[0]}/textures/${
-												path.split(/\:/g)[1]
-										}.png`,
-								),
+
+			document.getElementById('openBtn').onclick = async () => {
+				const filePath = await ipcRenderer.invoke('open_file');
+
+				scene.remove.apply(scene, scene.children);
+
+				const filePathPieces = filePath.split(/[\/\\]/g);
+				const fileName = filePathPieces[filePathPieces.length - 1];
+
+				new MinecraftModelLoader().load(filePath, mesh => {
+					const textureLoader = new MinecraftTextureLoader();
+					mesh.resolveTextures(path => {
+						let namespace, texture;
+						
+						if (path.indexOf(':') === -1) {
+							namespace = 'minecraft';
+							texture = path;
+						} else {
+							const pathPieces = path.split(/\:/g);
+							namespace = pathPieces[0];
+							texture = pathPieces[1];
+						}
+
+						return textureLoader.load(
+							`./mc_assets/${namespace}/textures/${texture}.png`,
 						);
-						scene.add(mesh);
 					});
+					scene.add(mesh);
 				});
-			});
+			};
 		</script>
 	</body>
 </html>

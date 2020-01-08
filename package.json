@@ -2,7 +2,7 @@
 	"name": "mc-model-vision",
 	"productName": "MC Model Vision",
 	"version": "0.0.1",
-  	"main": "src/main/index.js",
+	"main": "src/main/index.js",
 	"description": "View Minecraft models easy as pie.",
 	"license": "MIT",
 	"repository": "railrunner166/mc-model-vision",
@@ -21,6 +21,7 @@
 		"release": "np"
 	},
 	"dependencies": {
+		"custom-electron-titlebar": "^3.2.1",
 		"electron-context-menu": "^0.15.0",
 		"electron-debug": "^3.0.0",
 		"electron-store": "^5.1.0",

@@ -4,7 +4,7 @@ const package = require('../../package.json');
 const path = require('path');
 
 // Electron imports
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { autoUpdater } = require('electron-updater');
 const { is } = require('electron-util');
 const unhandled = require('electron-unhandled');
@@ -35,6 +35,7 @@ class MCModelVisionApp {
 			title: app.name,
 			width: 600,
 			height: 400,
+			frame: false,
 			webPreferences: {
 				nodeIntegration: true,
 			},
@@ -75,12 +76,31 @@ class MCModelVisionApp {
 			if (!is.macos) app.quit();
 		});
 	}
+
+	setupIPC() {
+		ipcMain.handle('open_file', async (event, ...args) => {
+			const fileNames = dialog.showOpenDialogSync({
+				filters: {
+					extensions: ['json'],
+				},
+			});
+
+			if (fileNames === undefined) return null;
+
+			return fileNames[0];
+		});
+
+		ipcMain.handle('close_app', async (event, ...args) => {
+			app.quit();
+		});
+	}
 }
 
 const modelVisionApp = new MCModelVisionApp();
 modelVisionApp.initAutoUpdater();
 modelVisionApp.preventMultipleWindows();
 modelVisionApp.initMainAppEvents();
+modelVisionApp.setupIPC();
 
 (async () => {
 	await app.whenReady();
